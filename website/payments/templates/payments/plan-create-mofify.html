@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-6 text-center">
+        <h2>{{ title }}</h2>
+        <div class="row">
+            {% if showPrice %}
+                <div class="col-8">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <input type="submit" class="btn btn-info" value="next">
+                    </form>
+                </div>
+                <div class="col-4">
+                    <div class="container text-center">
+                        Price: <i id="price">...</i>
+                    </div>
+                </div>
+            {% else %}
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="submit" class="btn btn-info" value="next">
+                </form>
+            {% endif %}
+        </div>
+        
+    </div>
+</div>
+{% endblock content %}
+
+{% if showPrice %}
+{% block script %}
+
+<script>
+    function writePrice() {
+        var data = $('form').serializeArray().reduce(function(obj, item) {
+                obj[item.name] = item.value;
+                return obj;
+            }, {});
+
+            var keys = $.map(data, function(element,index) {return index})
+            keys.shift()
+
+            let price = 0.0;
+            for (let index = 0; index < keys.length; index+=2) {
+                const gateway = keys[index].toString().split("-", 1)[0];
+                console.log("Gateway", gateway)
+
+                let month = "0"; 
+                let tasks = "0";
+                if (keys.length > 1) {
+                    month = data[keys[index]];
+                    tasks = data[keys[index + 1]];
+                } else {
+                    tasks = data[keys[index]];
+                }
+                
+                console.log("Month", month);
+                console.log("Tasks", tasks);
+                
+                let request = new XMLHttpRequest();
+
+                request.open("GET", `http://127.0.0.1:8000/paymenys/api/local/get-price-of-plan/${gateway}/${tasks}/${month}/`);
+                request.send();
+                request.onload = () => {
+                    console.log(request);
+                    if (request.status === 200) {
+                        let response = JSON.parse(request.response);
+                        price += response["price"];
+                        
+                        $('#price').text(price.toFixed(2))
+                    } else {
+                        console.log("ERRORE",request.response)
+                    }
+                }
+            }
+    }
+
+    $(document).ready(function() {
+        writePrice()
+
+        $('select').on('change', function() {
+            writePrice()
+        })
+    });
+</script>
+{% endblock script %}
+{% endif %}

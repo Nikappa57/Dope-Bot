@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Select Gateway{% endblock title %}
+
+<img src={{ product.image }}>
+<p>Date: {{ product.name }}</p>
+<p>Date: {{ product.skuLaunchDate }}</p></br>
+
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-6 text-center">
+        <h2>Select Gateway</h2>
+        
+        <p>No product available</p>
+        <a href="{% url 'panel_view' %}" class="btn btn-success">Back</a>
+
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Select Gateway{% endblock title %}
+
+<img src={{ product.image }}>
+<p>Date: {{ product.name }}</p>
+<p>Date: {{ product.skuLaunchDate }}</p></br>
+
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-6 text-center">
+        <h2>Select Gateway</h2>
+        <div class="container">
+
+            {% if page.has_previous %}
+            <a class="fas fa-arrow-left" href="?page={{ products.previous_page_number }}"></a>
+            {% endif %}
+            {% if page.has_next %}
+            <a class="fas fa-arrow-right" href="?page={{ products.next_page_number }}"></a>
+            {% endif %}
+
+            <div class="row">
+                {% for product in products %}
+                    {% if forloop.counter0|divisibleby:3 and not forloop.first %}
+                        <div class="w-100"></div>
+                    {% endif %}
+                    <div class="col">
+                        <a href="{% url 'select_details_view' gatewaySlug product.sku %}">
+                            <div class="card mb-3">
+                                <img class="card-img-top" src="{{ product.imgUrl }}" alt="img">
+                                <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">Date: {{ product.relaseDate }}</p>
+                                </div>
+                            </div> 
+                        </a> 
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if page.has_previous %}
+            <a class="fas fa-arrow-left" href="?page={{ products.previous_page_number }}"></a>
+            {% endif %}
+            {% if page.has_next %}
+            <a class="fas fa-arrow-right" href="?page={{ products.next_page_number }}"></a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

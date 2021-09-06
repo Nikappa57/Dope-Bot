@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel{% endblock title %}
+
+{% block content %}
+
+        <h1>Panel</h1>
+        
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <section class="mt-5">
+            <div class="row">
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col-7">
+                            <h2>TASKS</h2>
+                        </div>
+                        <div class="col-1">
+                            {% if page.has_previous %}
+                            <a class="fas fa-arrow-left" href="?page={{ tasks.previous_page_number }}{% if expired %}&expired=True{% endif %}"></a>
+                            {% endif %}
+                            {% if page.has_next %}
+                            <a class="fas fa-arrow-right" href="?page={{ tasks.next_page_number }}{% if expired %}&expired=True{% endif %}"></a>
+                            {% endif %}
+                        </div>
+                        <div class="col-2">
+                            {% if expired %}
+                                <a href="?expired=False">back</a>
+                            {% else %}
+                                <a href="?expired=True">expired</a>
+                            {% endif %}
+                        </div>
+                        <div class="col-2">
+                            <a href="{% url 'select_gateway_view' %}" class="btn btn-success">
+                                New Task
+                            </a>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Gateway</th>
+                                <th scope="col">Relase Date</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">State</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in tasks %}
+                            <tr class="
+                                {% if task.state == Task.FAILED %}
+                                    table-danger
+                                {% elif task.state == Task.SUCCESS %}
+                                    table-success
+                                {% elif task.state == Task.INPROGRESS %}
+                                    table-warning
+                                {% endif %}">
+                                <td>{{ task.gateway.name }}</td>
+                                <td>{{ task.date }}</td>
+                                <td>{{ task.item.name }}</td>
+                                <td>{{ task.state }}</td>
+                                <td>
+                                    <span class="badge badge-primary badge-pill">
+                                        <a href="{% url 'delete_task_view' task.id %}" class="fas fa-trash-alt text-primary">
+                                            delete
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table> 
+                </div>
+                <div class="col-4">
+                    <h2>Accounts</h2>
+                    <ul class="list-group">
+                        {% for name, data in accounts.items %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-success">
+                                <b> {{name}} </b>
+                                <span class="badge badge-primary badge-pill">
+                                    <a class="far fa-plus-square" href="{% url 'add_account_view' data.gateway %}">
+                                        Add
+                                    </a>
+                                </span>
+                            </li>
+                            {% for account in data.accounts %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ account.name }}
+                                        <span  class="badge badge-primary badge-pill">
+                                            <a href="{% url 'edit_account_view' data.gateway account.id %}" class="fas fa-edit text-primary">
+                                                edit
+                                            </a>
+                                        </span>
+                                        <span class="badge badge-primary badge-pill">
+                                            <a href="{% url 'delete_account_view' account.gateway.supportedAccount account.id %}" class="fas fa-trash-alt text-primary">
+                                                delete
+                                            </a>
+                                        </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                      </ul>
+                </div>
+            </div>
+        </section>
+
+    
+{% endblock content %}
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+  </button>

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Select Gateway{% endblock title %}
+
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-6 text-center">
+        <h2>Select Gateway</h2>
+        <div class="container">
+            <div class="row">
+                {% for title, urls in gateways.items %}
+                    <h4>{{ title }}</h4>
+                    {% for name, slug in urls.items %}
+                        {% if forloop.counter0|divisibleby:3 and not forloop.first %}
+                            <div class="w-100"></div>
+                        {% endif %}
+                            <div class="col">
+                                {% if slug %}<a href="{% url 'select_item_view' slug %}">{% endif %}
+                                    <div class="card">
+                                        <div class="card-body">
+                                          <h5 class="card-title">{{ name }}</h5>
+                                          {% if not slug %}
+                                          <p class="card-text">Coming Soon</p>
+                                          {% endif %}
+                                        </div>
+                                      </div>
+                                {% if slug %}</a>{% endif %}
+                            </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

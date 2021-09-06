@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Logout{% endblock title %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-4 text-center">
+        <h2>Logout</h2>
+        <br>
+        <p><a href="{% url 'login' %}">Login</a></p>
+    </div>
+</div>
+{% endblock content %}

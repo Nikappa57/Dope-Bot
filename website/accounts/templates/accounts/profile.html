@@ -1,0 +1,43 @@
+
+
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block content %}
+
+{% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+<h1>Profile:</h1>
+
+{{ user.username }} <br>
+{{ user.email }} <br>
+<br><br>
+<h2>Your Plan</h2><br>
+{% for perm in user.permissions.all %}
+    <h4>{{ perm.gateway.name }}</h4>
+    <p>
+        Max Tasks: {{ perm.maxTasks }}
+        {% if not perm.hasMaxTasks and not perm.expired %}
+            <a href="{% url 'modify_details_plan' perm.id %}">add tasks</a>
+        {% endif %}
+    </p>
+    <p>{% if perm.expired %} Expired {% else %}
+        Expire at {{ perm.expireAt }} {% endif %}</p>
+    {% if perm.expired %}
+        <a href="{% url 'renew_plan' perm.id %}">renew</a> 
+    {% endif %}
+    <br><br>
+{% endfor %}
+<a href="{% url 'choose_gateway_plan' %}">Add new Gateway</a>
+
+{% endblock content %}
