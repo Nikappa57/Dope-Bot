@@ -9,6 +9,7 @@ The project is not finished so the bot has not been linked to the website
 
 #### Payments
 Calculate Plan Price based on sneakers shop, max task and duration of the plan
+
 Prices are managed even for adding tasks
 
 ### Bot
